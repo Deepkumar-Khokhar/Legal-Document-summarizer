@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Landing Page
+{% endblock %}
+
+{% block content %}
+<section class="relative w-full h-screen bg-gradient-to-r from-[#3D52A0] via-[#7091E6] to-[#8697C4] flex items-center justify-center text-white">
+    <div class="text-center">
+        <h1 class="text-6xl font-bold drop-shadow-lg animate-fadeIn">Welcome to Our Platform</h1>
+        <p class="mt-4 text-lg opacity-90 animate-fadeIn delay-200">
+            Explore the best experience with modern technology and solutions.
+        </p>
+        <a href="">
+            <button class="mt-6 px-6 py-3 bg-[#EDE8F5] text-black font-semibold rounded-lg shadow-md hover:bg-[#ADBBDA] transition duration-300 animate-bounce">
+                Get Started
+            </button>
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 bg-white text-gray-800">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-extrabold mb-8">Why Choose Us?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Feature 1 -->
+            <div class="p-8 bg-gray-100 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+                <div class="text-5xl text-blue-600 mb-4">⚡</div>
+                <h3 class="text-xl font-semibold">Fast & Secure</h3>
+                <p class="mt-2 text-gray-600">We ensure high-speed performance with top-notch security.</p>
+            </div>
+            <!-- Feature 2 -->
+            <div class="p-8 bg-gray-100 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+                <div class="text-5xl text-blue-600 mb-4">💡</div>
+                <h3 class="text-xl font-semibold">User-Friendly</h3>
+                <p class="mt-2 text-gray-600">Our interface is designed for easy navigation and smooth experience.</p>
+            </div>
+            <!-- Feature 3 -->
+            <div class="p-8 bg-gray-100 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+                <div class="text-5xl text-blue-600 mb-4">🛠️</div>
+                <h3 class="text-xl font-semibold">24/7 Support</h3>
+                <p class="mt-2 text-gray-600">We provide round-the-clock support for all your needs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %} 

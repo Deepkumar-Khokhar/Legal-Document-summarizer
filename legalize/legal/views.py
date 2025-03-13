@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 
 # Create your views here.
-def home(request):
-    return render(request, 'home.html')
+def landing(request):
+    return render(request, 'landing.html')
 
 # def login(request):
 #     return render(request, 'login.html')
@@ -62,3 +62,6 @@ def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect('login')
+
+def home(request):
+    return render(request, 'home.html')

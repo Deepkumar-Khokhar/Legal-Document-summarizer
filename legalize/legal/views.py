@@ -118,6 +118,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+
 def login(request):
     if request.method == 'POST':
         email = request.POST.get('email')

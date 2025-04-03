@@ -34,12 +34,22 @@
 
             <!-- Login & Signup Buttons (Desktop) -->
             <div class="hidden md:flex space-x-4">
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
                 <a href="{% url 'login' %}" class="bg-[#ADBBDA] text-black px-4 py-2 rounded-lg font-semibold hover:bg-[#EDE8F5] transition duration-300">
                     Login
                 </a>
                 <a href="{% url 'signup' %}" class="bg-[#EDE8F5] text-black px-4 py-2 rounded-lg font-semibold hover:bg-[#ADBBDA] transition duration-300">
                     Sign Up
                 </a>
+            {% endif %}
+                
             </div>
         </div>
     </nav>

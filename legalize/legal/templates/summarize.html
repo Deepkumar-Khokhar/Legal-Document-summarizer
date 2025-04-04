@@ -13,20 +13,33 @@ Summarization Results
         </p>
     </div>
 
-    <div class="bg-white text-gray-800 mt-10 p-8 rounded-lg shadow-lg w-full max-w-3xl">
+    <div class="bg-white text-gray-800 mt-10 p-8 rounded-lg shadow-lg w-full max-w-4xl">
         <h2 class="text-3xl font-bold mb-6 text-center text-[#516ed6]">Document: {{ file_name }}</h2>
 
         <p class="text-lg font-semibold text-[#3D52A0]">Word Count: {{ word_count }}</p>
 
-        <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm">
-            <h3 class="text-2xl font-semibold text-[#3D52A0]">Extracted Text:</h3>
-            <p class="mt-2 text-gray-700">{{ extracted_text }}</p>
+        <!-- Word Cloud -->
+        <div class="mt-6">
+            <h3 class="text-2xl font-semibold text-[#3D52A0] mb-2">Word Cloud of Key Terms:</h3>
+            <img src="{{ wordcloud_url }}" alt="Word Cloud" class="rounded-lg shadow-md w-full h-auto"/>
         </div>
 
-        <div class="mt-6 p-4 bg-gray-200 rounded-lg shadow-sm">
-            <h3 class="text-2xl font-semibold text-[#3D52A0]">Summarized Text:</h3>
-            <p class="mt-2 text-gray-700">{{ summary }}</p>
+        <!-- Extracted Text -->
+        <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm relative">
+            <h3 class="text-2xl font-semibold text-[#3D52A0]">Extracted Text:</h3>
+            <button onclick="copyText('extractedText')" class="absolute top-4 right-4 text-sm px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Copy</button>
+            <p id="extractedText" class="mt-2 text-gray-700 whitespace-pre-line">{{ extracted_text }}</p>
         </div>
+
+        <!-- Summarized Text -->
+        <div class="mt-6 p-4 bg-gray-200 rounded-lg shadow-sm relative">
+            <h3 class="text-2xl font-semibold text-[#3D52A0]">Summarized Text:</h3>
+            <button onclick="copyText('summaryText')" class="absolute top-4 right-4 text-sm px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Copy</button>
+            <button onclick="readAloud('summaryText')" class="absolute top-4 right-20 text-sm px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600">🔊 Read Aloud</button>
+            <p id="summaryText" class="mt-2 text-gray-700 whitespace-pre-line">{{ summary|safe }}</p>
+        </div>
+
+        
 
         <a href="{% url 'home' %}">
             <button class="mt-6 px-6 py-3 bg-[#3D52A0] text-white font-semibold rounded-lg shadow-md hover:bg-[#2C3B7A] transition duration-300 w-full">
@@ -35,4 +48,20 @@ Summarization Results
         </a>
     </div>
 </section>
+
+<script>
+    function copyText(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Copied to clipboard!");
+        });
+    }
+
+    function readAloud(id) {
+        const text = document.getElementById(id).innerText;
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US';
+        window.speechSynthesis.speak(speech);
+    }
+</script>
 {% endblock content %}

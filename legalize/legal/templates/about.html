@@ -1,24 +1,77 @@
-<!-- templates/about.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>About LegalEase</title>
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-r from-purple-300 via-blue-300 to-green-300 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-2xl text-center">
-        <h1 class="text-4xl font-extrabold text-gray-800 mb-6">About LegalEase</h1>
-        <p class="text-lg text-gray-700 mb-4">
-            LegalEase is a web app that uses AI to simplify legal documents.
-        </p>
-        <p class="text-md text-gray-600 mb-4">
-            We use NLP models like T5 and BART to generate document summaries and provide insights such as word clouds and key phrases.
-        </p>
-        <p class="text-md text-gray-600">
-            Built with Django and powered by machine learning, LegalEase makes legal content easier for everyone.
-        </p>
+{% extends "layout.html" %}
+{% load static tailwind_tags %}
+{% block title %}About LegalEase{% endblock %}
+{% block content %}
+
+<!-- Animate.css CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<section class="bg-gradient-to-b from-indigo-100 via-white to-sky-100 py-20 text-gray-800">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-16 animate__animated animate__fadeInDown pt-[60px]">
+      <h1 class="text-5xl font-extrabold text-indigo-800 mb-4">Discover LegalEase</h1>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+        I blend legal expertise with cutting-edge AI to deliver effortless legal document summarization. At LegalEase, simplicity meets intelligence.
+      </p>
     </div>
-</body>
-</html>
+
+    <!-- Vision & Mission -->
+    <div class="grid md:grid-cols-2 gap-10 mb-20">
+      <div class="bg-white rounded-3xl shadow-xl p-8 animate__animated animate__fadeInLeft">
+        <h2 class="text-2xl font-bold text-indigo-700 mb-4">Our Vision</h2>
+        <p class="text-gray-700 leading-relaxed">
+          To revolutionize the way people interact with legal documents. We aim to make law accessible, understandable, and useful for everyone — regardless of background.
+        </p>
+      </div>
+      <div class="bg-white rounded-3xl shadow-xl p-8 animate__animated animate__fadeInRight">
+        <h2 class="text-2xl font-bold text-indigo-700 mb-4">Our Mission</h2>
+        <p class="text-gray-700 leading-relaxed">
+          To simplify legal complexity by leveraging AI-powered NLP models like BART, T5, and TextRank — ensuring clarity, security, and trust in every summary we generate.
+        </p>
+      </div>
+    </div>
+
+    <!-- Meet the Creator -->
+    <div class="text-center mb-20">
+      <h2 class="text-3xl font-bold text-indigo-800 mb-10 animate__animated animate__fadeInUp">Meet the Creator</h2>
+      <div class="flex justify-center">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xs text-center transform hover:-translate-y-2 transition duration-300 hover:shadow-2xl animate__animated animate__zoomIn">
+          <img src="{% static "kenil.png" %}" alt="Kenil Nakrani" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover shadow-md">
+          <h3 class="text-xl font-semibold text-indigo-700">Kenil Nakrani</h3>
+          <p class="text-sm text-gray-500 mt-1">Founder • LegalEase</p>
+          <p class="text-sm text-gray-600 mt-4">
+            Turning complex problems into beautiful, usable tech. Driven by a passion to bridge AI with real-world challenges.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mb-20">
+      <h2 class="text-3xl font-bold text-indigo-800 text-center mb-10 animate__animated animate__fadeIn">Why Choose LegalEase?</h2>
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition animate__animated animate__fadeInUp">
+          <span class="text-4xl text-indigo-600">⚡</span>
+          <h4 class="font-semibold text-lg mt-4">Fast & Efficient</h4>
+          <p class="text-gray-600 mt-2">Summarizes lengthy documents in just seconds using top-tier models.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition animate__animated animate__fadeInUp animate__delay-1s">
+          <span class="text-4xl text-indigo-600">🔍</span>
+          <h4 class="font-semibold text-lg mt-4">Precise & Clear</h4>
+          <p class="text-gray-600 mt-2">Uses AI to deliver context-rich, human-readable legal summaries.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition animate__animated animate__fadeInUp animate__delay-2s">
+          <span class="text-4xl text-indigo-600">🔒</span>
+          <h4 class="font-semibold text-lg mt-4">Secure & Private</h4>
+          <p class="text-gray-600 mt-2">We value your data and ensure strict privacy in every operation.</p>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+</section>
+
+{% endblock %}

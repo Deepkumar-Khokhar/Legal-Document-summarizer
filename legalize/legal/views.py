@@ -13,27 +13,26 @@ from django.http import HttpResponse
 from transformers import BartTokenizer, BartForConditionalGeneration
 from wordcloud import WordCloud
 from .middlewares import auth, guest
+from .models import UploadHistory  # ✅ Import the UploadHistory model
 
 # Load BART model for summarization
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
 device = torch.device("cpu")
 
-User = get_user_model()  # Get the custom user model if using one
+User = get_user_model()
 
 
 # Function to generate word cloud
 def generate_wordcloud(text):
-    """Generates a word cloud image and saves it to the media directory."""
     media_path = settings.MEDIA_ROOT
-    os.makedirs(media_path, exist_ok=True)  # Ensure media directory exists
+    os.makedirs(media_path, exist_ok=True)
     wordcloud_path = os.path.join(media_path, "wordcloud.png")
 
-    # Generate and save the word cloud
     wordcloud = WordCloud(width=800, height=400, background_color="white").generate(text)
     wordcloud.to_file(wordcloud_path)
 
-    return settings.MEDIA_URL + "wordcloud.png"  # Return the URL
+    return settings.MEDIA_URL + "wordcloud.png"
 
 
 # Function to extract text from PDF
@@ -58,7 +57,6 @@ def extract_text_from_docx(file_path):
 
 # Function to summarize text using BART
 def summarize_text(text):
-    """Summarizes the extracted text using BART."""
     preprocessed_text = text.strip().replace("\n", "")
 
     inputs = tokenizer.encode("summarize: " + preprocessed_text, return_tensors="pt", max_length=1024, truncation=True).to(device)
@@ -66,7 +64,7 @@ def summarize_text(text):
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
 
 
-# Function to handle document upload and summarization
+# Summarize view
 def summarize(request):
     if request.method == "POST":
         uploaded_file = request.FILES.get("document")
@@ -74,10 +72,10 @@ def summarize(request):
             return render(request, "index.html", {"error": "Please upload a document."})
 
         file_path = default_storage.save(uploaded_file.name, uploaded_file)
-        file_path = os.path.join(settings.MEDIA_ROOT, file_path)  # Ensure absolute path
+        file_path = os.path.join(settings.MEDIA_ROOT, file_path)
         file_ext = os.path.splitext(uploaded_file.name)[1].lower()
 
-        # Extract text from file
+        # Extract text
         if file_ext == ".pdf":
             extracted_text = extract_text_from_pdf(file_path)
         elif file_ext == ".docx":
@@ -85,16 +83,22 @@ def summarize(request):
         else:
             extracted_text = "Unsupported file format."
 
-        # Summarize extracted text
+        # Summarize
         summary = summarize_text(extracted_text)
         word_count = len(extracted_text.split())
-
-        # Generate Word Cloud
         wordcloud_url = generate_wordcloud(extracted_text)
 
-        # Save summary to session for later use
+        # Save summary to session
         request.session["summary"] = summary
         request.session["extracted_text"] = extracted_text
+
+        # ✅ Save history to DB
+        if request.user.is_authenticated:
+            UploadHistory.objects.create(
+                user=request.user,
+                file_name=uploaded_file.name,
+                file_path=file_path
+            )
 
         return render(
             request,
@@ -111,12 +115,12 @@ def summarize(request):
     return render(request, "index.html")
 
 
-# Landing Page View
+# Landing page
 def landing(request):
     return render(request, "landing.html")
 
 
-# User Signup View
+# Signup view
 @guest
 def user_signup(request):
     if request.method == "POST":
@@ -130,7 +134,7 @@ def user_signup(request):
     return render(request, "signup.html", {"form": form})
 
 
-# User Login View
+# Login view
 @guest
 def user_login(request):
     if request.method == "POST":
@@ -144,19 +148,25 @@ def user_login(request):
     return render(request, "login.html", {"form": form})
 
 
-# Home View (Requires Authentication)
+# Logout view
+def logout_view(request):
+    logout(request)
+    return redirect("landing")
+
+
+# Home view
 @auth
 def home(request):
     return render(request, "home.html")
 
 
-# User Logout View
-def logout_view(request):
-    logout(request)
-    return redirect("login")
-
-from django.shortcuts import render
-
+# About page
 def about(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
 
+
+# ✅ History view
+@auth
+def history(request):
+    uploads = UploadHistory.objects.filter(user=request.user).order_by("-uploaded_at")
+    return render(request, "history.html", {"uploads": uploads})

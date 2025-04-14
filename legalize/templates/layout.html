@@ -18,7 +18,8 @@
     <nav class="bg-gradient-to-r fixed z-10 w-full from-[#3D52A0] via-[#7091E6] to-[#8697C4] p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
             <!-- Logo -->
-            <div class="text-white text-2xl font-bold">LOGO</div>
+            {% comment %} <div class="text-white text-2xl font-bold">LOGO</div> {% endcomment %}
+            <img src="{% static "Logo.png" %}" alt="Logo" class="h-[60px] w-[150px]">
 
             <!-- Mobile Menu Button -->
             <button id="menu-toggle" class="md:hidden text-white text-2xl focus:outline-none">
@@ -28,7 +29,7 @@
             <!-- Navigation Links (Desktop) -->
             <ul class="hidden md:flex space-x-8 text-white font-semibold text-lg">
                 <li><a href="{% url 'home' %}" class="hover:text-[#EDE8F5] transition duration-300">Home</a></li>
-                <li><a href="" class="hover:text-[#EDE8F5] transition duration-300">About</a></li>
+                <li><a href="{% url 'about' %}" class="hover:text-[#EDE8F5] transition duration-300">About</a></li>
                 <li><a href="" class="hover:text-[#EDE8F5] transition duration-300">Contact</a></li>
             </ul>
 

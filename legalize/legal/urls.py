@@ -12,6 +12,7 @@ urlpatterns = [
     path('summarize/', views.summarize, name="summarize"),
     path('about/', views.about, name='about'),
     path('history/', views.history, name='history'),
+    path('download-pdf/', views.download_summary_pdf, name='download_summary_pdf'),
 
 ]
 

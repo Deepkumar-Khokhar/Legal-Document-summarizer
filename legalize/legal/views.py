@@ -12,8 +12,11 @@ from django.conf import settings
 from django.http import HttpResponse
 from transformers import BartTokenizer, BartForConditionalGeneration
 from wordcloud import WordCloud
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 from .middlewares import auth, guest
-from .models import UploadHistory  # ✅ Import the UploadHistory model
+from .models import UploadHistory
 
 # Load BART model for summarization
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
@@ -88,11 +91,12 @@ def summarize(request):
         word_count = len(extracted_text.split())
         wordcloud_url = generate_wordcloud(extracted_text)
 
-        # Save summary to session
+        # Save summary and file name to session
         request.session["summary"] = summary
         request.session["extracted_text"] = extracted_text
+        request.session["file_name"] = uploaded_file.name
 
-        # ✅ Save history to DB
+        # Save history to DB
         if request.user.is_authenticated:
             UploadHistory.objects.create(
                 user=request.user,
@@ -113,6 +117,36 @@ def summarize(request):
         )
 
     return render(request, "index.html")
+
+
+# Download Summary as PDF view
+def download_summary_pdf(request):
+    summary = request.session.get("summary", "")
+    file_name = request.session.get("file_name", "summary.pdf")
+
+    if not summary:
+        return HttpResponse("No summary available.", status=400)
+
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    text_object = p.beginText(40, height - 50)
+    text_object.setFont("Helvetica", 12)
+
+    lines = summary.split("\n")
+    for line in lines:
+        for part in [line[i:i+90] for i in range(0, len(line), 90)]:
+            text_object.textLine(part)
+
+    p.drawText(text_object)
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{file_name.split(".")[0]}_summary.pdf"'
+    return response
 
 
 # Landing page
@@ -165,7 +199,7 @@ def about(request):
     return render(request, "about.html")
 
 
-# ✅ History view
+# History view
 @auth
 def history(request):
     uploads = UploadHistory.objects.filter(user=request.user).order_by("-uploaded_at")

@@ -35,11 +35,23 @@ Summarization Results
         <div class="mt-6 p-4 bg-gray-200 rounded-lg shadow-sm relative">
             <h3 class="text-2xl font-semibold text-[#3D52A0]">Summarized Text:</h3>
             <button onclick="copyText('summaryText')" class="absolute top-4 right-4 text-sm px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Copy</button>
-            <button onclick="readAloud('summaryText')" class="absolute top-4 right-20 text-sm px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600">🔊 Read Aloud</button>
+
+            <!-- Read Aloud Buttons -->
+            <div class="absolute top-4 right-28 space-x-2">
+                <button onclick="startReading('summaryText')" class="text-sm px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600">▶️ Play</button>
+                <button onclick="pauseReading()" class="text-sm px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">⏸️ Pause</button>
+                <button onclick="resumeReading()" class="text-sm px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">🔁 Resume</button>
+                {% comment %} <button onclick="stopReading()" class="text-sm px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600">⏹️ Stop</button> {% endcomment %}
+            </div>
+
             <p id="summaryText" class="mt-2 text-gray-700 whitespace-pre-line">{{ summary|safe }}</p>
         </div>
 
-        
+        <a href="{% url 'download_summary_pdf' %}" target="_blank">
+            <button class="mt-4 px-6 py-3  bg-[#3D52A0] text-white font-semibold rounded-lg shadow-md hover:bg-[#2C3B7A] transition duration-300 w-full">
+                📥 Download Summary as PDF
+            </button>
+        </a>
 
         <a href="{% url 'home' %}">
             <button class="mt-6 px-6 py-3 bg-[#3D52A0] text-white font-semibold rounded-lg shadow-md hover:bg-[#2C3B7A] transition duration-300 w-full">
@@ -57,11 +69,41 @@ Summarization Results
         });
     }
 
-    function readAloud(id) {
+    let speech;
+    let isPaused = false;
+
+    function startReading(id) {
         const text = document.getElementById(id).innerText;
-        const speech = new SpeechSynthesisUtterance(text);
+
+        // Cancel any previous utterance
+        window.speechSynthesis.cancel();
+
+        speech = new SpeechSynthesisUtterance(text);
         speech.lang = 'en-US';
+        speech.rate = 1;
+        isPaused = false;
         window.speechSynthesis.speak(speech);
     }
+
+    function pauseReading() {
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+            window.speechSynthesis.pause();
+            isPaused = true;
+        }
+    }
+
+    function resumeReading() {
+        if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+            isPaused = false;
+        }
+    }
+
+    {% comment %} function stopReading() {
+        if (window.speechSynthesis.speaking || isPaused) {
+            window.speechSynthesis.cancel();
+            isPaused = false;
+        }
+    } {% endcomment %}
 </script>
 {% endblock content %}
